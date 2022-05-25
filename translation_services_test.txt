@@ -1,0 +1,60 @@
+### Translation
+# Bing
+# Reverso
+# TranslateComTranslate
+# Default
+
+### Dictionary
+# Reverso
+# Bing
+# Default
+
+
+
+
+from translatepy.translators.google import GoogleTranslate
+from translatepy.translators.yandex import YandexTranslate
+from translatepy.translators.microsoft import MicrosoftTranslate
+from translatepy.translators.reverso import ReversoTranslate
+from translatepy.translators.bing import BingTranslate
+from translatepy.translators.deepl import DeeplTranslate
+from translatepy.translators.libre import LibreTranslate
+from translatepy.translators.translatecom import TranslateComTranslate
+from translatepy.translators.mymemory import MyMemoryTranslate
+
+text = "These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system."
+res = []
+
+res.append("GoogleTranslate: " + str(GoogleTranslate().translate(text, "spa")))
+res.append("YandexTranslate: " + str(YandexTranslate().translate(text, "spa")))
+res.append("MicrosoftTranslate: " + str(MicrosoftTranslate().translate(text, "spa")))
+res.append("ReversoTranslate: " + str(ReversoTranslate().translate(text, "spa")))
+res.append("BingTranslate: " + str(BingTranslate().translate(text, "spa")))
+# res.append("DeeplTranslate: " + str(DeeplTranslate().translate(text, "spa")))
+res.append("LibreTranslate: " + str(LibreTranslate().translate(text, "spa")))
+res.append("TranslateComTranslate: " + str(TranslateComTranslate().translate(text, "spa")))
+res.append("MyMemoryTranslate: " + str(MyMemoryTranslate().translate(text, "spa")))
+
+for e in res:
+	print(e + "\n")
+
+
+text2 = "Disgusting"
+
+res = []
+
+res.append({"GoogleTranslate": GoogleTranslate().dictionary(text2, "spa").result})
+res.append({"YandexTranslate": YandexTranslate().dictionary(text2, "spa").result})
+res.append({"MicrosoftTranslate": MicrosoftTranslate().dictionary(text2, "spa").result})
+res.append({"ReversoTranslate": ReversoTranslate().dictionary(text2, "spa").result})
+res.append({"BingTranslate": BingTranslate().dictionary(text2, "spa").result})
+# res.append({"DeeplTranslate": DeeplTranslate().dictionary(text2, "spa").result})
+res.append({"LibreTranslate": LibreTranslate().dictionary(text2, "spa").result})
+res.append({"TranslateComTranslate": TranslateComTranslate().dictionary(text2, "spa").result})
+# res.append({"MyMemoryTranslate": MyMemoryTranslate().dictionary(text2, "spa").result})
+
+
+for e in res:
+	print(str(e) + "\n")
+
+

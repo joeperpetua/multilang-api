@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
+
+*{
+    scrollbar-width: thin;
+    scrollbar-color: #d0bcff #35363A;
+    color: #B2B7C4;
+}
+  
+*::-webkit-scrollbar {
+    width: 18px;               /* width of the entire scrollbar */
+}
+
+#detect_field::-webkit-scrollbar {
+    width: 0;               /* width of the entire scrollbar */
+}
+  
+*::-webkit-scrollbar-track {
+    background: #35363A;        /* color of the tracking area */
+}
+  
+*::-webkit-scrollbar-thumb {
+    background-color: #d0bcff;    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+    border: 3px solid #35363A;  /* creates padding around scroll thumb */
+}
+
+body{
+    height: 100vh;
+    font-family: 'Roboto', sans-serif;
+}
+
+.main {
+    padding: 0;
+}
+
+.no-margin{
+    margin: 0;
+}
+
+#trans_btn{
+    cursor: pointer;
+    z-index: 1;
+    left: -35rem;
+}
+
+.search-bar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.float{
+    left: -52px;
+}
+
+.trans-text{
+    margin: 6rem 0px;
+}
+
+.similar{
+    margin: 10rem 10rem 0 0;
+    display: none;
+}
+
+.similar summary {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.btn-footer{
+    padding: 5px!important;
+}
+
+footer a {
+    width: 32rem;
+}
+
