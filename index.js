@@ -19,7 +19,7 @@ const toggleLoader = (loading) => {
 
     if(loading){
         loader.style.display = "inline-block";
-    }else if(!loading && loader_flag == 4) {
+    }else if(!loading) {
         loader.style.display = "none";
         loader_flag = 0;
     }
@@ -28,40 +28,65 @@ const toggleLoader = (loading) => {
 
 const translateHandler = async (q, tl) => {
 
-    let textField = document.querySelector(`#trans_${tl}`);
+    tlArray = tl.split(",");
+    textFieldArray = [];
+    tlArray.forEach(e => {
+        textFieldArray.push({"target": e, "element": document.querySelector(`#trans_${e}`)});
+    });
     
-    let trans_response = await fetch(`https://apiml.joeper.myds.me/translate?q=${q}&tl=${tl}`);
+    // let trans_response = await fetch(`https://apiml.joeper.myds.me/translate?q=${q}&tl=${tl}`);
+    let trans_response = await fetch(`http://localhost:8662/translate?q=${q}&tl=${tl}`);
     if (trans_response.ok) { // if HTTP-status is 200-299
         let trans_json = await trans_response.json();
         // console.log(trans_json)
 
-        textField.innerText = trans_json.result;
+        trans_json.translations.forEach(e => {
+            textFieldArray.forEach(textFieldArrayElement => {
+                if(e.target == textFieldArrayElement.target){
+                    textFieldArrayElement.element.innerHTML = e.result;
+                }
+            });
+        });
+        
     } else {
         console.error(trans_response);  
     }
 
 
-    let dict_response = await fetch(`https://apiml.joeper.myds.me/dictionary?q=${q}&tl=${tl}`);
+    similarArray = [];
+    tlArray.forEach(e => {
+        similarArray.push({"target": e, "element": document.querySelector(`#similar_list_${e}`)});
+        document.querySelector(`#similar_list_${e}`).innerHTML = "";
+        document.querySelector(`#similar_${e}`).style.display = "none";
+    });
+    
+    // let trans_response = await fetch(`https://apiml.joeper.myds.me/translate?q=${q}&tl=${tl}`);
+    let dict_response = await fetch(`http://localhost:8662/dictionary?q=${q}&tl=${tl}`);
     if (dict_response.ok) { // if HTTP-status is 200-299
         let dict_json = await dict_response.json();
-        // console.log(dict_json)
+        // console.log(trans_json)
 
-        let similar = document.querySelector(`#similar_list_${tl}`);
-        similar.innerHTML = ``;
 
-        dict_json.result.forEach(element => {
-            similar.innerHTML += `${element}; `;
+
+        dict_json.definitions.forEach(e => {
+            similarArray.forEach(similarArrayElement => {
+                // console.log(e.target, similarArrayElement.target, similarArrayElement.element.innerHTML);
+
+                if(e.target == similarArrayElement.target){
+                    e.result.forEach(def => {
+                        // console.log(def)
+                        similarArrayElement.element.innerHTML += `${def}; `;
+                    });
+                    document.querySelector(`#similar_${e.target}`).style.display = "block";
+                }
+            });
         });
-
-        document.querySelector(`#similar_${tl}`).style.display = "block";
-
+        
     } else {
         let dict_json = await dict_response.json();
         console.log(dict_json);  
-        document.querySelector(`#similar_${tl}`).style.display = "none";
     }
     
-    toggleLoader(false);
 }
 
 
@@ -75,10 +100,8 @@ const runTranslation = async () => {
     
     toggleLoader(true);
 
-    translateHandler(mainField, "eng");
-    translateHandler(mainField, "spa");
-    translateHandler(mainField, "fre");
-    translateHandler(mainField, "deu");
+    await translateHandler(mainField, "eng,spa,fre,deu");
 
+    toggleLoader(false);
 }
 
