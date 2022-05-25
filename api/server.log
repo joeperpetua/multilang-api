@@ -562,3 +562,168 @@ INFO:werkzeug:127.0.0.1 - - [11/May/2022 17:55:02] "[31m[1mGET /dictionary?q=H
 INFO:werkzeug:127.0.0.1 - - [11/May/2022 17:55:02] "[31m[1mGET /dictionary?q=Hola&tl=spa HTTP/1.1[0m" 400 -
 INFO:werkzeug:127.0.0.1 - - [11/May/2022 17:55:02] "GET /dictionary?q=Hola&tl=fre HTTP/1.1" 200 -
 INFO:werkzeug:127.0.0.1 - - [11/May/2022 17:55:02] "GET /dictionary?q=Hola&tl=eng HTTP/1.1" 200 -
+INFO:werkzeug: * Running on http://127.0.0.1:8662 (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 10:55:45] "[33mGET / HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 10:55:45] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 10:55:53] "[31m[1mGET /translate HTTP/1.1[0m" 400 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 10:56:49] "[31m[1mGET /translate?q=hola&tl=[%22deu%22,%20%22eng%22,%20%22spa%22] HTTP/1.1[0m" 400 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+INFO:werkzeug: * Running on http://127.0.0.1:8662 (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 11:00:01] "GET /translate?q=hola&tl=[%22deu%22,%20%22eng%22,%20%22spa%22] HTTP/1.1" 200 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+INFO:werkzeug: * Running on http://127.0.0.1:8662 (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:32:31] "[35m[1mGET /translate?q=hola&tl=[%22deu%22,%20%22eng%22,%20%22spa%22] HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:32:31] "GET /translate?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:32:31] "GET /translate?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:32:32] "GET /translate?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:32:32] "[36mGET /translate?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:33:24] "[35m[1mGET /translate?q=hola&tl=[%22deu%22,%20%22eng%22,%20%22spa%22] HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:33:25] "[36mGET /translate?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:33:25] "[36mGET /translate?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:33:25] "[36mGET /translate?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:33:25] "[36mGET /translate?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:34:29] "[31m[1mGET /translate?q=hola&tl[]=%22spa%22&tl[]=%22eng%22&tl[]=%22deu%22 HTTP/1.1[0m" 400 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+INFO:werkzeug: * Running on http://127.0.0.1:8662 (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:41:59] "[31m[1mGET /translate?q=hola&tl=%22spa%22&tl=%22eng%22&tl=%22deu%22 HTTP/1.1[0m" 400 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:42:26] "[31m[1mGET /translate?q=hola&tl=spa&tl=eng&tl=deu HTTP/1.1[0m" 400 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:42:41] "[31m[1mGET /translate?q=hola&tl[]=spa&tl[]=eng&tl[]=deu HTTP/1.1[0m" 400 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:42:52] "[31m[1mGET /translate?q=hola&tl=spa&tl=eng&tl=deu HTTP/1.1[0m" 400 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:49:11] "[31m[1mGET /translate?q=hola&tl=spa&tl=eng&tl=deu HTTP/1.1[0m" 400 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:52:08] "[35m[1mGET /translate?q=hola&tl=spa&tl=eng&tl=deu HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:52:08] "[36mGET /translate?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:52:08] "[36mGET /translate?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:52:08] "[36mGET /translate?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:52:09] "[36mGET /translate?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:52:27] "[35m[1mGET /translate?q=hola&tl=spa&tl=eng&tl=deu HTTP/1.1[0m" 500 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:52:28] "[36mGET /translate?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:52:28] "[36mGET /translate?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:52:28] "[36mGET /translate?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:52:28] "[36mGET /translate?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:53:03] "[31m[1mGET /translate?q=hola&tl=spa&tl=eng&tl=deu HTTP/1.1[0m" 400 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:53:27] "[31m[1mGET /translate?q=hola&tl=spa&tl=eng&tl=deu HTTP/1.1[0m" 400 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:54:22] "[31m[1mGET /translate?q=hola&tl[]=spa&tl[]=eng&tl[]=deu HTTP/1.1[0m" 400 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:55:04] "[31m[1mGET /translate?q=hola&tl[]=spa&tl[]=eng&tl[]=deu HTTP/1.1[0m" 400 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:55:29] "[31m[1mGET /translate?q=hola&tl=[%22deu%22,%20%22eng%22,%20%22spa%22] HTTP/1.1[0m" 400 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:56:10] "[31m[1mGET /translate?q=hola&tl=deu,eng,spa HTTP/1.1[0m" 400 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:58:37] "GET /translate?q=hola&tl=deu,eng,spa HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 14:58:52] "[31m[1mGET /translate?q=hola& HTTP/1.1[0m" 400 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:02:32] "GET /translate?q=hola&tl=deu,eng,spa HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:02:41] "[31m[1mGET /translate?q=hola HTTP/1.1[0m" 400 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:03:03] "[31m[1mGET /translate?q=chau HTTP/1.1[0m" 400 -
+INFO:werkzeug: * Running on http://127.0.0.1:8662 (Press CTRL+C to quit)
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:03:21] "[31m[1mGET /translate?q=chau HTTP/1.1[0m" 400 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:03:50] "GET /translate?q=chau&tl=eng,fre HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:04:07] "GET /translate?q=chau&tl=eng,fre,deu HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:04:16] "GET /translate?q=chau&tl=eng,fre,deu,jpn HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:04:27] "GET /translate?q=automovil&tl=eng,fre,deu,jpn HTTP/1.1" 200 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:05:50] "GET /translate?q=automovil&tl=eng,fre,deu,jpn HTTP/1.1" 200 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:06:14] "GET /translate?q=automovil&tl=eng,fre,deu,jpn HTTP/1.1" 200 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:07:01] "GET /translate?q=automovil&tl=eng,fre,deu,jpn HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:07:18] "GET /translate?q=el%20automovil&tl=eng,fre,deu,jpn HTTP/1.1" 200 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:11:46] "[31m[1mGET /dictionary?q=el%20automovil&tl=eng,fre,deu,jpn HTTP/1.1[0m" 400 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:12:03] "GET /dictionary?q=automovil&tl=eng,fre,deu,jpn HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:12:49] "GET /dictionary?q=car&tl=eng,fre,deu,jpn HTTP/1.1" 200 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:14:18] "GET /dictionary?q=car&tl=eng,fre,deu,jpn HTTP/1.1" 200 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:14:51] "GET /dictionary?q=car&tl=eng,fre,deu,jpn HTTP/1.1" 200 -
+INFO:werkzeug: * Detected change in 'C:\\Users\\joelp\\Desktop\\proj\\MultiLang\\api\\app.py', reloading
+INFO:werkzeug: * Restarting with stat
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 116-980-681
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:15:22] "GET /translate?q=car&tl=eng,fre,deu,jpn HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:15:40] "[31m[1mGET /dictionary?&tl=eng,fre,deu,jpn HTTP/1.1[0m" 400 -
+INFO:werkzeug:127.0.0.1 - - [25/May/2022 15:15:48] "[31m[1mGET /dictionary?q=&tl=eng,fre,deu,jpn HTTP/1.1[0m" 400 -

@@ -1,3 +1,4 @@
+from dataclasses import Field
 from flask import Flask, request, abort
 from flask_restful import abort, Api, Resource
 from flask_cors import CORS
@@ -11,7 +12,7 @@ urllib3.disable_warnings()
 
 class QuerySchema(Schema):
     q = fields.Str(required=True)
-    tl = fields.Str(required=True)
+    tl = fields.List(fields.Str(), required=True)
 
 app = Flask(__name__)
 
@@ -22,6 +23,13 @@ api = Api(app)
 schema = QuerySchema()
 t_services = Translator(services_list=[BingTranslate, ReversoTranslate, TranslateComTranslate, GoogleTranslate])
 d_services = Translator(services_list=[ReversoTranslate, BingTranslate, GoogleTranslate])
+
+def validateArgs(q, tl):
+        if q is None or q == "":
+            abort(400, message="No query provided")
+
+        if tl is None or tl == "":
+            abort(400, message="No target language provided")
 
 class Dictionary(Resource):
         
@@ -48,32 +56,43 @@ class Dictionary(Resource):
 
     def get(self):
 
-        # check args are received
-        errors = schema.validate(request.args)
-        if errors:
-            abort(400, message=str(errors))
-
-        query = request.args.get('q')
-        tl = request.args.get('tl')
-
-        # print(query)
-        # print(tl)
-
-        q = self.dictionaryeHandler(query, tl)
+        validateArgs(request.args.get('q'), request.args.get('tl'))
         
+        query = request.args.get('q')
+        pre_format_tl = request.args.get('tl')
+        tl = pre_format_tl.split(",")
 
-        if q is None or len(q.result) <= 0:
+        print("----------making request for: ----------\n", query)
+        print(tl)
+
+        q = []
+        total_length = 0
+
+        q = []
+        total_length = 0
+
+        for e in tl:
+            #print("-----", e)
+            tmp = self.dictionaryeHandler(query, e)
+            if tmp is None or len(tmp.result) <= 0:
+                pass
+            else:
+                total_length += 1
+                q.append({
+                    "target": str(e),
+                    "service": str(tmp.service),
+                    "result": tmp.result
+                })   
+
+        if total_length <= 0:
             print("An error occured while translating with translatepy")
             abort(400, message=str("No results for query: " + query))
 
-        res = {
-            "service": str(q.service),
-            "result": q.result
-        }
-
-        return res
+        return {"definitions": q}
 
 class Translate(Resource):
+
+
 
     def translateHandler(self, text, tl):
 
@@ -82,7 +101,7 @@ class Translate(Resource):
         try:
             result = t_services.translate(text, destination_language=tl)
         except UnknownLanguage as err:
-            print("An error occured while searching for the language you passed in")
+            print("An error occured while searching for the language you passed in", tl)
             print("Similarity:", round(err.similarity), "%")
             return
         except TranslatepyException:
@@ -98,30 +117,36 @@ class Translate(Resource):
 
 
     def get(self):
-
-        errors = schema.validate(request.args)
-        if errors:
-            abort(400, message=str(errors))
-
+        validateArgs(request.args.get('q'), request.args.get('tl'))
+        
         query = request.args.get('q')
-        tl = request.args.get('tl')
+        pre_format_tl = request.args.get('tl')
+        tl = pre_format_tl.split(",")
 
-        print(query)
+        print("----------making request for: ----------\n", query)
         print(tl)
-        
-        q = self.translateHandler(query, tl)
-        
 
-        if q is None or len(q.result) <= 0:
+        q = []
+        total_length = 0
+
+        for e in tl:
+            #print("-----", e)
+            tmp = self.translateHandler(query, e)
+            if tmp is None or len(tmp.result) <= 0:
+                pass
+            else:
+                total_length += 1
+                q.append({
+                    "target": str(e),
+                    "service": str(tmp.service),
+                    "result": str(tmp.result)
+                })   
+
+        if total_length <= 0:
             print("An error occured while translating with translatepy")
             abort(400, message=str("No results for query: " + query))
 
-        res = {
-            "service": str(q.service),
-            "result": str(q.result)
-        }
-
-        return res
+        return {"translations": q}
 
 api.add_resource(Dictionary, '/dictionary', endpoint='dict')
 api.add_resource(Translate, '/translate', endpoint='translate')
@@ -129,7 +154,7 @@ api.add_resource(Translate, '/translate', endpoint='translate')
 # omit of you intend to use `flask run` command
 if __name__ == '__main__':
     import logging
-    logging.basicConfig(filename='server.log',level=logging.INFO)
+    logging.basicConfig(filename='server.log',level=logging.ERROR)
     app.run(debug=True, port=8662)
 
 
