@@ -21,24 +21,46 @@ cors = CORS(app, origins=["http://127.0.0.1:5500", "https://multilang.joeper.myd
 
 api = Api(app)
 schema = QuerySchema()
+td_default = Translator()
 t_services = Translator(services_list=[BingTranslate, ReversoTranslate, TranslateComTranslate, GoogleTranslate])
 d_services = Translator(services_list=[ReversoTranslate, BingTranslate, GoogleTranslate])
 
 def validateArgs(q, tl):
         if q is None or q == "":
-            abort(400, message="No query provided")
+            abort(400, message="No query provided.\nProvided: " + q)
 
         if tl is None or tl == "":
-            abort(400, message="No target language provided")
+            abort(400, message="No target language provided.\nProvided: " + tl)
 
 class Dictionary(Resource):
         
-    def dictionaryeHandler(self, text, tl):
+    def dictionaryHandler(self, text, tl):
 
         result = ""
 
         try:
             result = d_services.dictionary(text, destination_language=tl)
+        except UnknownLanguage as err:
+            print("An error occured while searching for the language you passed in")
+            print("Similarity:", round(err.similarity), "%")
+            return
+        except TranslatepyException:
+            print("An error occured while translating with translatepy")
+            return
+        except Exception:
+            print("An unknown error occured")
+            return
+        
+        print("service used: " + str(result.service))
+        
+        return result
+
+    def dictionaryDefault(self, text, tl):
+
+        result = ""
+
+        try:
+            result = td_default.dictionary(text, destination_language=tl)
         except UnknownLanguage as err:
             print("An error occured while searching for the language you passed in")
             print("Similarity:", round(err.similarity), "%")
@@ -73,7 +95,10 @@ class Dictionary(Resource):
 
         for e in tl:
             #print("-----", e)
-            tmp = self.dictionaryeHandler(query, e)
+            tmp = self.dictionaryHandler(query, e)
+            if tmp is None or len(tmp.result) <= 0:
+                tmp = self.dictionaryDefault(query, e)
+            
             if tmp is None or len(tmp.result) <= 0:
                 pass
             else:
@@ -91,8 +116,6 @@ class Dictionary(Resource):
         return {"definitions": q}
 
 class Translate(Resource):
-
-
 
     def translateHandler(self, text, tl):
 
@@ -114,7 +137,26 @@ class Translate(Resource):
         print("service used: " + str(result.service))
         
         return result
+    
+    def translateDefault(self, text, tl):
+        result = ""
 
+        try:
+            result = td_default.translate(text, destination_language=tl)
+        except UnknownLanguage as err:
+            print("An error occured while searching for the language you passed in", tl)
+            print("Similarity:", round(err.similarity), "%")
+            return
+        except TranslatepyException:
+            print("An error occured while translating with translatepy")
+            return
+        except Exception:
+            print("An unknown error occured")
+            return
+        
+        print("service used: " + str(result.service))
+        
+        return result
 
     def get(self):
         validateArgs(request.args.get('q'), request.args.get('tl'))
@@ -132,6 +174,9 @@ class Translate(Resource):
         for e in tl:
             #print("-----", e)
             tmp = self.translateHandler(query, e)
+            if tmp is None or len(tmp.result) <= 0:
+                tmp = self.translateDefault(query, e)
+            
             if tmp is None or len(tmp.result) <= 0:
                 pass
             else:

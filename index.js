@@ -34,8 +34,8 @@ const translateHandler = async (q, tl) => {
         textFieldArray.push({"target": e, "element": document.querySelector(`#trans_${e}`)});
     });
     
-    // let trans_response = await fetch(`https://apiml.joeper.myds.me/translate?q=${q}&tl=${tl}`);
-    let trans_response = await fetch(`http://localhost:8662/translate?q=${q}&tl=${tl}`);
+    let trans_response = await fetch(`https://apiml.joeper.myds.me/translate?q=${q}&tl=${tl}`);
+    // let trans_response = await fetch(`http://localhost:8662/translate?q=${q}&tl=${tl}`);
     if (trans_response.ok) { // if HTTP-status is 200-299
         let trans_json = await trans_response.json();
         // console.log(trans_json)
@@ -60,8 +60,8 @@ const translateHandler = async (q, tl) => {
         document.querySelector(`#similar_${e}`).style.display = "none";
     });
     
-    // let trans_response = await fetch(`https://apiml.joeper.myds.me/translate?q=${q}&tl=${tl}`);
-    let dict_response = await fetch(`http://localhost:8662/dictionary?q=${q}&tl=${tl}`);
+    let dict_response = await fetch(`https://apiml.joeper.myds.me/dictionary?q=${q}&tl=${tl}`);
+    // let dict_response = await fetch(`http://localhost:8662/dictionary?q=${q}&tl=${tl}`);
     if (dict_response.ok) { // if HTTP-status is 200-299
         let dict_json = await dict_response.json();
         // console.log(trans_json)
