@@ -6,6 +6,7 @@ from marshmallow import Schema, fields
 from translatepy import Translator
 from translatepy.translators import BingTranslate, ReversoTranslate, TranslateComTranslate, GoogleTranslate, DeeplTranslate
 from translatepy.exceptions import TranslatepyException, UnknownLanguage
+import flask_monitoringdashboard as dashboard
 import urllib3
 
 urllib3.disable_warnings()
@@ -15,6 +16,8 @@ class QuerySchema(Schema):
     tl = fields.List(fields.Str(), required=True)
 
 app = Flask(__name__)
+dashboard.config.init_from(file='C:/Users/joelp/Desktop/proj/MultiLang/api/config.cfg')
+dashboard.bind(app)
 
 # host in NAS and add cors
 cors = CORS(app, origins=["http://127.0.0.1:5500", "https://multilang.joeper.myds.me"])
