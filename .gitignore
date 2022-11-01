@@ -1,4 +1,8 @@
-/api/server.log
-/api/config.cfg
-/api/flask_monitoringdashboard.db
 /old
+/multilang-env
+/._DAV
+/@eaDir
+flask_monitoringdashboard.db
+config.cfg
+server.log
+requirements.txt
