@@ -16,7 +16,7 @@ class QuerySchema(Schema):
     tl = fields.List(fields.Str(), required=True)
 
 app = Flask(__name__)
-dashboard.config.init_from(file='C:/Users/joelp/Desktop/proj/MultiLang/api/config.cfg')
+dashboard.config.init_from(file='./config.cfg')
 dashboard.bind(app)
 
 # host in NAS and add cors
