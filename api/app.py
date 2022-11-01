@@ -20,7 +20,7 @@ dashboard.config.init_from(file='C:/Users/joelp/Desktop/proj/MultiLang/api/confi
 dashboard.bind(app)
 
 # host in NAS and add cors
-cors = CORS(app, origins=["http://127.0.0.1:5500", "https://multilang.joeper.myds.me"])
+cors = CORS(app, origins=["http://127.0.0.1:5500", "https://multilang.joeper.myds.me", "https://joeperpetua.github.io"])
 
 api = Api(app)
 schema = QuerySchema()

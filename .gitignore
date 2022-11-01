@@ -1,3 +1,4 @@
 /api/server.log
 /api/config.cfg
 /api/flask_monitoringdashboard.db
+/old
