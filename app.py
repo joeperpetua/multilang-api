@@ -1,6 +1,5 @@
-from dataclasses import Field
 from flask import Flask, request, abort
-from flask_restful import abort, Api, Resource
+from flask_restful import Api, Resource
 from flask_cors import CORS
 from marshmallow import Schema, fields
 from translatepy import Translator
@@ -8,6 +7,7 @@ from translatepy.translators import BingTranslate, ReversoTranslate, TranslateCo
 from translatepy.exceptions import TranslatepyException, UnknownLanguage
 import flask_monitoringdashboard as dashboard
 import urllib3
+import regex
 
 urllib3.disable_warnings()
 
@@ -30,171 +30,163 @@ d_services = Translator(services_list=[ReversoTranslate, BingTranslate, GoogleTr
 
 def validateArgs(q, tl):
         if q is None or q == "":
-            abort(400, message="No query provided.\nProvided: " + q)
+            abort(400, "No query provided.")
 
         if tl is None or tl == "":
-            abort(400, message="No target language provided.\nProvided: " + tl)
+            abort(400, "No target language provided.")
 
 class Dictionary(Resource):
         
     def dictionaryHandler(self, text, tl):
-
         result = ""
-
         try:
             result = d_services.dictionary(text, destination_language=tl)
         except UnknownLanguage as err:
-            print("An error occured while searching for the language you passed in")
-            print("Similarity:", round(err.similarity), "%")
-            return
+            print(f"Could not translate due to {UnknownLanguage}. Continue to use default service.")
+            return None
         except TranslatepyException:
-            print("An error occured while translating with translatepy")
-            return
+            print(f"Could not translate due to {TranslatepyException}. Continue to use default service.")
+            return None
         except Exception:
-            print("An unknown error occured")
-            return
-        
-        print("service used: " + str(result.service))
-        
+             print(f"Could not translate due to {Exception}. Continue to use default service.")
+             return None
         return result
 
     def dictionaryDefault(self, text, tl):
-
         result = ""
-
         try:
             result = td_default.dictionary(text, destination_language=tl)
         except UnknownLanguage as err:
-            print("An error occured while searching for the language you passed in")
-            print("Similarity:", round(err.similarity), "%")
-            return
+            abort(400, f"An error occured while searching for the language you passed in. Similarity: {round(err.similarity)}")
         except TranslatepyException:
-            print("An error occured while translating with translatepy")
-            return
+            abort(500, "An error occured while translating with translatepy")
         except Exception:
-            print("An unknown error occured")
-            return
-        
-        print("service used: " + str(result.service))
-        
+            abort(500, "An unknown error occured")
         return result
 
     def get(self):
-
-        validateArgs(request.args.get('q'), request.args.get('tl'))
-        
+        validateArgs(request.args.get('q'), request.args.get('tl'))     
         query = request.args.get('q')
         pre_format_tl = request.args.get('tl')
         tl = pre_format_tl.split(",")
 
-        print("----------making request for: ----------\n", query)
-        print(tl)
-
-        q = []
+        response = []
         total_length = 0
 
-        q = []
-        total_length = 0
-
-        for e in tl:
-            #print("-----", e)
-            tmp = self.dictionaryHandler(query, e)
-            if tmp is None or len(tmp.result) <= 0:
-                tmp = self.dictionaryDefault(query, e)
+        for language in tl:
+            translation = self.dictionaryHandler(query, language)
+            if translation is None or len(translation.result) <= 0:
+                translation = self.dictionaryDefault(query, language)
             
-            if tmp is None or len(tmp.result) <= 0:
+            if translation is None or len(translation.result) <= 0:
                 pass
             else:
                 total_length += 1
-                q.append({
-                    "target": str(e),
-                    "service": str(tmp.service),
-                    "result": tmp.result
+                response.append({
+                    "target": str(language),
+                    "service": str(translation.service),
+                    "result": translation.result
                 })   
 
         if total_length <= 0:
-            print("An error occured while translating with translatepy")
-            abort(400, message=str("No results for query: " + query))
+            abort(400, f"No results for query: {query}")
 
-        return {"definitions": q}
+        return {"definitions": response}
 
 class Translate(Resource):
 
-    def translateHandler(self, text, tl):
-
+    def translateHandler(self, text, tl, html):
         result = ""
-
         try:
-            result = t_services.translate(text, destination_language=tl)
+            if html:
+                result = td_default.translate_html(text, destination_language=tl)
+            else:
+                result = td_default.translate(text, destination_language=tl)     
         except UnknownLanguage as err:
-            print("An error occured while searching for the language you passed in", tl)
-            print("Similarity:", round(err.similarity), "%")
-            return
+            print(f"Could not translate due to {UnknownLanguage}. Continue to use default service.")
+            return None
         except TranslatepyException:
-            print("An error occured while translating with translatepy")
-            return
+            print(f"Could not translate due to {TranslatepyException}. Continue to use default service.")
+            return None
         except Exception:
-            print("An unknown error occured")
-            return
-        
-        print("service used: " + str(result.service))
-        
+             print(f"Could not translate due to {Exception}. Continue to use default service.")
+             return None     
         return result
     
-    def translateDefault(self, text, tl):
+    def translateDefault(self, text, tl, html):
         result = ""
 
         try:
-            result = td_default.translate(text, destination_language=tl)
+            if html:
+                result = td_default.translate_html(text, destination_language=tl)
+            else:
+                result = td_default.translate(text, destination_language=tl)
         except UnknownLanguage as err:
-            print("An error occured while searching for the language you passed in", tl)
-            print("Similarity:", round(err.similarity), "%")
-            return
+            abort(400, f"An error occured while searching for the language you passed in. Similarity: {round(err.similarity)}")
         except TranslatepyException:
-            print("An error occured while translating with translatepy")
-            return
+            abort(500, "An error occured while translating with translatepy")
         except Exception:
-            print("An unknown error occured")
-            return
-        
-        print("service used: " + str(result.service))
-        
+            abort(500, "An unknown error occured") 
         return result
 
     def get(self):
         validateArgs(request.args.get('q'), request.args.get('tl'))
-        
         query = request.args.get('q')
         pre_format_tl = request.args.get('tl')
         tl = pre_format_tl.split(",")
 
-        print("----------making request for: ----------\n", query)
-        print(tl)
-
-        q = []
+        response = []
         total_length = 0
 
-        for e in tl:
-            #print("-----", e)
-            tmp = self.translateHandler(query, e)
-            if tmp is None or len(tmp.result) <= 0:
-                tmp = self.translateDefault(query, e)
+        for language in tl:
+            translation = self.translateHandler(query, language, False)
+            if translation is None or len(translation.result) <= 0:
+                translation = self.translateDefault(query, language, False)
             
-            if tmp is None or len(tmp.result) <= 0:
+            if translation is None or len(translation.result) <= 0:
                 pass
             else:
                 total_length += 1
-                q.append({
-                    "target": str(e),
-                    "service": str(tmp.service),
-                    "result": str(tmp.result)
+                response.append({
+                    "target": str(language),
+                    "service": str(translation.service),
+                    "result": str(translation.result)
                 })   
 
         if total_length <= 0:
-            print("An error occured while translating with translatepy")
-            abort(400, message=str("No results for query: " + query))
+            abort(400, f"No results for query: {query}")
 
-        return {"translations": q}
+        return {"translations": response}
+    
+    
+    def post(self):
+        validateArgs(request.form.get('q'), request.form.get('tl'))
+        query = request.form.get('q')
+        pre_format_tl = request.form.get('tl')
+        tl = pre_format_tl.split(",")
+
+        response = []
+        total_length = 0
+
+        for language in tl:
+            translation = self.translateHandler(query, language, True)
+            if translation is None or len(translation) <= 0:
+                translation = self.translateDefault(query, language, True)
+            
+            if translation is None or len(translation) <= 0:
+                pass
+            else:
+                translation = regex.sub(f'\"', "'", translation)
+                total_length += 1
+                response.append({
+                    "target": str(language),
+                    "result": f'{translation}'
+                })
+
+        if total_length <= 0:
+            abort(400, f"No results for query: {query}")
+
+        return {"translations": response}
 
 api.add_resource(Dictionary, '/dictionary', endpoint='dict')
 api.add_resource(Translate, '/translate', endpoint='translate')
@@ -203,7 +195,7 @@ api.add_resource(Translate, '/translate', endpoint='translate')
 if __name__ == '__main__':
     import logging
     logging.basicConfig(filename='server.log',level=logging.ERROR)
-    app.run(debug=True, port=8662)
+    app.run(debug=False, port=8662)
 
 
 
