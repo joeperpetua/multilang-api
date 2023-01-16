@@ -28,19 +28,22 @@ td_default = Translator()
 t_services = Translator(services_list=[BingTranslate, ReversoTranslate, TranslateComTranslate, GoogleTranslate])
 d_services = Translator(services_list=[ReversoTranslate, BingTranslate, GoogleTranslate])
 
-def validateArgs(q, tl):
+def validateArgs(q, tl, sl):
         if q is None or q == "":
             abort(400, "No query provided.")
 
         if tl is None or tl == "":
             abort(400, "No target language provided.")
+        
+        if sl is None or sl == "":
+            abort(400, "No source language provided.")
 
 class Dictionary(Resource):
         
-    def dictionaryHandler(self, text, tl):
+    def dictionaryHandler(self, text, tl, sl):
         result = ""
         try:
-            result = d_services.dictionary(text, destination_language=tl)
+            result = d_services.dictionary(text, destination_language=tl, source_language=sl)
         except UnknownLanguage as err:
             print(f"Could not translate due to {UnknownLanguage}. Continue to use default service.")
             return None
@@ -52,10 +55,10 @@ class Dictionary(Resource):
              return None
         return result
 
-    def dictionaryDefault(self, text, tl):
+    def dictionaryDefault(self, text, tl, sl):
         result = ""
         try:
-            result = td_default.dictionary(text, destination_language=tl)
+            result = td_default.dictionary(text, destination_language=tl, source_language=sl)
         except UnknownLanguage as err:
             abort(400, f"An error occured while searching for the language you passed in. Similarity: {round(err.similarity)}")
         except TranslatepyException:
@@ -65,25 +68,27 @@ class Dictionary(Resource):
         return result
 
     def get(self):
-        validateArgs(request.args.get('q'), request.args.get('tl'))     
+        validateArgs(request.args.get('q'), request.args.get('tl'), request.args.get('sl')) 
         query = request.args.get('q')
         pre_format_tl = request.args.get('tl')
+        sl = request.args.get('sl')
         tl = pre_format_tl.split(",")
 
         response = []
         total_length = 0
 
         for language in tl:
-            translation = self.dictionaryHandler(query, language)
+            translation = self.dictionaryHandler(query, language, sl)
             if translation is None or len(translation.result) <= 0:
-                translation = self.dictionaryDefault(query, language)
+                translation = self.dictionaryDefault(query, language, sl)
             
             if translation is None or len(translation.result) <= 0:
                 pass
             else:
                 total_length += 1
                 response.append({
-                    "target": str(language),
+                    "source": str(translation.source_language),
+                    "target": str(translation.destination_language),
                     "service": str(translation.service),
                     "result": translation.result
                 })   
@@ -95,13 +100,13 @@ class Dictionary(Resource):
 
 class Translate(Resource):
 
-    def translateHandler(self, text, tl, html):
+    def translateHandler(self, text, tl, sl, html):
         result = ""
         try:
             if html:
-                result = td_default.translate_html(text, destination_language=tl)
+                result = td_default.translate_html(text, destination_language=tl, source_language=sl)
             else:
-                result = td_default.translate(text, destination_language=tl)     
+                result = td_default.translate(text, destination_language=tl, source_language=sl)     
         except UnknownLanguage as err:
             print(f"Could not translate due to {UnknownLanguage}. Continue to use default service.")
             return None
@@ -113,14 +118,14 @@ class Translate(Resource):
              return None     
         return result
     
-    def translateDefault(self, text, tl, html):
+    def translateDefault(self, text, tl, sl, html):
         result = ""
 
         try:
             if html:
-                result = td_default.translate_html(text, destination_language=tl)
+                result = td_default.translate_html(text, destination_language=tl, source_language=sl)
             else:
-                result = td_default.translate(text, destination_language=tl)
+                result = td_default.translate(text, destination_language=tl, source_language=sl)
         except UnknownLanguage as err:
             abort(400, f"An error occured while searching for the language you passed in. Similarity: {round(err.similarity)}")
         except TranslatepyException:
@@ -130,27 +135,29 @@ class Translate(Resource):
         return result
 
     def get(self):
-        validateArgs(request.args.get('q'), request.args.get('tl'))
+        validateArgs(request.args.get('q'), request.args.get('tl'), request.args.get('sl'))
         query = request.args.get('q')
         pre_format_tl = request.args.get('tl')
+        sl = request.args.get('sl')
         tl = pre_format_tl.split(",")
 
         response = []
         total_length = 0
 
         for language in tl:
-            translation = self.translateHandler(query, language, False)
+            translation = self.translateHandler(query, language, sl, False)
             if translation is None or len(translation.result) <= 0:
-                translation = self.translateDefault(query, language, False)
+                translation = self.translateDefault(query, language, sl, False)
             
             if translation is None or len(translation.result) <= 0:
                 pass
             else:
                 total_length += 1
                 response.append({
-                    "target": str(language),
+                    "source": str(translation.source_language),
+                    "target": str(translation.destination_language),
                     "service": str(translation.service),
-                    "result": str(translation.result)
+                    "result": translation.result
                 })   
 
         if total_length <= 0:
@@ -160,18 +167,19 @@ class Translate(Resource):
     
     
     def post(self):
-        validateArgs(request.form.get('q'), request.form.get('tl'))
+        validateArgs(request.form.get('q'), request.form.get('tl'), request.form.get('sl'))
         query = request.form.get('q')
         pre_format_tl = request.form.get('tl')
+        sl = request.form.get('sl')
         tl = pre_format_tl.split(",")
 
         response = []
         total_length = 0
 
         for language in tl:
-            translation = self.translateHandler(query, language, True)
+            translation = self.translateHandler(query, language, sl, True)
             if translation is None or len(translation) <= 0:
-                translation = self.translateDefault(query, language, True)
+                translation = self.translateDefault(query, language, sl, True)
             
             if translation is None or len(translation) <= 0:
                 pass
@@ -179,6 +187,7 @@ class Translate(Resource):
                 translation = regex.sub(f'\"', "'", translation)
                 total_length += 1
                 response.append({
+                    "source": str(sl),
                     "target": str(language),
                     "result": f'{translation}'
                 })
