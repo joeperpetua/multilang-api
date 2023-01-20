@@ -104,9 +104,9 @@ class Translate(Resource):
         result = ""
         try:
             if html:
-                result = td_default.translate_html(text, destination_language=tl, source_language=sl)
+                result = t_services.translate_html(text, destination_language=tl, source_language=sl)
             else:
-                result = td_default.translate(text, destination_language=tl, source_language=sl)     
+                result = t_services.translate(text, destination_language=tl, source_language=sl)     
         except UnknownLanguage as err:
             print(f"Could not translate due to {UnknownLanguage}. Continue to use default service.")
             return None
@@ -199,6 +199,7 @@ class Translate(Resource):
 
 api.add_resource(Dictionary, '/dictionary', endpoint='dict')
 api.add_resource(Translate, '/translate', endpoint='translate')
+api.add_resource(Translate, '/djapones', endpoint='djapones')
 
 # omit of you intend to use `flask run` command
 if __name__ == '__main__':
