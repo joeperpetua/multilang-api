@@ -2,9 +2,9 @@ from flask import Flask, request, abort
 from flask_restful import Api, Resource
 from flask_cors import CORS
 from marshmallow import Schema, fields
-from translatepy import Translator
+from translatepy import Translator, Language
 from translatepy.translators import BingTranslate, ReversoTranslate, GoogleTranslateV2, DeeplTranslate
-from translatepy.exceptions import TranslatepyException, UnknownLanguage
+from translatepy.exceptions import TranslatepyException, UnknownLanguage, NoResult
 import flask_monitoringdashboard as dashboard
 import urllib3
 import regex
@@ -114,10 +114,10 @@ class Translate(Resource):
                 else:
                     result = translate_long_service.translate(text, destination_language=tl, source_language=sl)
         except UnknownLanguage as err:
-            print(f"Could not translate due to {err}. Continue to use default service.")
+            print(f"Could not translate due to {err}. Continue to use default service. Params: {text}, {tl}, {sl}, {html}")
             return None
         except TranslatepyException as err:
-            print(f"Could not translate due to {err}. Continue to use default service.")
+            print(f"Could not translate due to {err}. Continue to use default service. Params: {text}, {tl}, {sl}, {html}")
             return None
         except Exception as err:
              print(f"Could not translate due to {err}. Continue to use default service.")
@@ -132,6 +132,9 @@ class Translate(Resource):
                 result = default_service.translate_html(text, destination_language=tl, source_language=sl)
             else:
                 result = default_service.translate(text, destination_language=tl, source_language=sl)
+        except NoResult as err:
+            print(f"Could not translate due to {err}. Return query without translating. Params: {text}, {tl}, {sl}, {html}")
+            return None
         except UnknownLanguage as err:
             abort(400, f"An error occured while searching for the language you passed in. Similarity: {round(err.similarity)}. Stack trace: {err}")
         except TranslatepyException as err:
@@ -150,29 +153,41 @@ class Translate(Resource):
         tl = pre_format_tl.split(",")
 
         response = []
-        total_length = 0
 
         for language in tl:
-            translation = self.translateHandler(query, language, sl, False)
-            if translation is None or len(translation.result) <= 0:
-                translation = self.translateDefault(query, language, sl, False)
-            
-            if translation is None or len(translation.result) <= 0:
-                pass
+            # convert tl from String to Language to compare with sl
+            current_tl = str(language)
+            current_tl = Language(current_tl)
+
+            # if tl and sl are the same, then return the result as it arrived
+            if current_tl.id != sl.id:
+                translation = self.translateHandler(query, current_tl, sl, False)
+                if translation is None or len(translation.result) <= 0:
+                    translation = self.translateDefault(query, current_tl, sl, False)
+                                        
+                # if translation comes empty due to NoResult error, then return as it arrived
+                if translation is None or len(translation.result) <= 0:
+                    response.append({
+                        "source": str(sl),
+                        "target": str(current_tl),
+                        "service": "No service used.",
+                        "result": str(query)
+                    })
+                else:
+                    response.append({
+                        "source": str(translation.source_language),
+                        "target": str(translation.destination_language),
+                        "service": str(translation.service),
+                        "result": translation.result
+                    })
             else:
-                total_length += 1
                 response.append({
-                    "source": str(translation.source_language),
-                    "target": str(translation.destination_language),
-                    "service": str(translation.service),
-                    "result": translation.result
-                })   
-
-        if total_length <= 0:
-            abort(400, f"No results for query: {query}")
-
+                    "source": str(sl),
+                    "target": str(current_tl),
+                    "service": "No service used.",
+                    "result": str(query)
+                })
         return {"translations": response}
-    
     
     def post(self):
         validateArgs(request.form.get('q'), request.form.get('tl'), request.form.get('sl'))
@@ -184,27 +199,40 @@ class Translate(Resource):
         tl = pre_format_tl.split(",")
 
         response = []
-        total_length = 0
 
         for language in tl:
-            translation = self.translateHandler(query, language, sl, True)
-            if translation is None or len(translation) <= 0:
-                translation = self.translateDefault(query, language, sl, True)
+            # convert tl from String to Language to compare with sl
+            current_tl = str(language)
+            current_tl = Language(current_tl)
             
-            if translation is None or len(translation) <= 0:
-                pass
+            # if tl and sl are the same, then return the result as it arrived
+            if current_tl.id != sl.id:
+                translation = self.translateHandler(query, current_tl, sl, True)
+                if translation is None or len(translation) <= 0:
+                    translation = self.translateDefault(query, current_tl, sl, True)
+
+                # if translation comes empty due to NoResult error, then return as it arrived
+                if translation is None or len(translation) <= 0:
+                    response.append({
+                        "source": str(sl),
+                        "target": str(current_tl),
+                        "service": "No service used.",
+                        "result": str(query)
+                    })
+                else:
+                    translation = regex.sub(f'\"', "'", translation)
+                    response.append({
+                        "source": str(sl),
+                        "target": str(current_tl),
+                        "result": f'{translation}'
+                    })
             else:
-                translation = regex.sub(f'\"', "'", translation)
-                total_length += 1
                 response.append({
                     "source": str(sl),
-                    "target": str(language),
-                    "result": f'{translation}'
+                    "target": str(current_tl),
+                    "service": "No service used.",
+                    "result": str(query)
                 })
-
-        if total_length <= 0:
-            abort(400, f"No results for query: {query}")
-
         return {"translations": response}
 
 api.add_resource(Dictionary, '/dictionary', endpoint='dict')
