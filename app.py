@@ -3,7 +3,7 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 from marshmallow import Schema, fields
 from translatepy import Translator
-from translatepy.translators import BingTranslate, ReversoTranslate, TranslateComTranslate, GoogleTranslate, DeeplTranslate
+from translatepy.translators import BingTranslate, ReversoTranslate, TranslateComTranslate, GoogleTranslateV2, DeeplTranslate
 from translatepy.exceptions import TranslatepyException, UnknownLanguage
 import flask_monitoringdashboard as dashboard
 import urllib3
@@ -25,8 +25,8 @@ cors = CORS(app, origins=["http://127.0.0.1:5500", "https://multilang.joeper.myd
 api = Api(app)
 schema = QuerySchema()
 td_default = Translator()
-t_services = Translator(services_list=[BingTranslate, ReversoTranslate, TranslateComTranslate, GoogleTranslate])
-d_services = Translator(services_list=[ReversoTranslate, BingTranslate, GoogleTranslate])
+t_services = Translator(services_list=[BingTranslate, ReversoTranslate, TranslateComTranslate, GoogleTranslateV2])
+d_services = Translator(services_list=[ReversoTranslate, BingTranslate, GoogleTranslateV2])
 
 def validateArgs(q, tl, sl):
         if q is None or q == "":
