@@ -3,7 +3,7 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 from marshmallow import Schema, fields
 from translatepy import Translator
-from translatepy.translators import BingTranslate, ReversoTranslate, TranslateComTranslate, GoogleTranslateV2, DeeplTranslate
+from translatepy.translators import BingTranslate, ReversoTranslate, GoogleTranslateV2, DeeplTranslate
 from translatepy.exceptions import TranslatepyException, UnknownLanguage
 import flask_monitoringdashboard as dashboard
 import urllib3
@@ -24,9 +24,12 @@ cors = CORS(app, origins=["http://127.0.0.1:5500", "https://multilang.joeper.myd
 
 api = Api(app)
 schema = QuerySchema()
-td_default = Translator()
-t_services = Translator(services_list=[BingTranslate, ReversoTranslate, TranslateComTranslate, GoogleTranslateV2])
-d_services = Translator(services_list=[ReversoTranslate, BingTranslate, GoogleTranslateV2])
+default_service = Translator()
+translate_short_service = Translator(services_list=[GoogleTranslateV2, BingTranslate, ReversoTranslate])
+translate_long_service = Translator(services_list=[DeeplTranslate, GoogleTranslateV2, BingTranslate, ReversoTranslate])
+dictionary_service = Translator(services_list=[ReversoTranslate, GoogleTranslateV2, BingTranslate])
+reverso_service = ReversoTranslate()
+google_service = GoogleTranslateV2()
 
 def validateArgs(q, tl, sl):
         if q is None or q == "":
@@ -43,28 +46,28 @@ class Dictionary(Resource):
     def dictionaryHandler(self, text, tl, sl):
         result = ""
         try:
-            result = d_services.dictionary(text, destination_language=tl, source_language=sl)
+            result = dictionary_service.dictionary(text, destination_language=tl, source_language=sl)
         except UnknownLanguage as err:
-            print(f"Could not translate due to {UnknownLanguage}. Continue to use default service.")
+            print(f"Could not translate due to {err}. Continue to use default service.")
             return None
-        except TranslatepyException:
-            print(f"Could not translate due to {TranslatepyException}. Continue to use default service.")
+        except TranslatepyException as err:
+            print(f"Could not translate due to {err}. Continue to use default service.")
             return None
-        except Exception:
-             print(f"Could not translate due to {Exception}. Continue to use default service.")
-             return None
+        except Exception as err:
+             print(f"Could not translate due to {err}. Continue to use default service.")
+             return None     
         return result
 
     def dictionaryDefault(self, text, tl, sl):
         result = ""
         try:
-            result = td_default.dictionary(text, destination_language=tl, source_language=sl)
+            result = default_service.dictionary(text, destination_language=tl, source_language=sl)
         except UnknownLanguage as err:
-            abort(400, f"An error occured while searching for the language you passed in. Similarity: {round(err.similarity)}")
-        except TranslatepyException:
-            abort(500, "An error occured while translating with translatepy")
-        except Exception:
-            abort(500, "An unknown error occured")
+            abort(400, f"An error occured while searching for the language you passed in. Similarity: {round(err.similarity)}. Stack trace: {err}")
+        except TranslatepyException as err:
+            abort(500, f"An error occured while translating with translatepy. Stack trace: {err}")
+        except Exception as err:
+            abort(500, f"An unknown error occured. Stack trace: {err}") 
         return result
 
     def get(self):
@@ -104,18 +107,21 @@ class Translate(Resource):
         result = ""
         try:
             if html:
-                result = t_services.translate_html(text, destination_language=tl, source_language=sl)
+                result = google_service.translate_html(text, destination_language=tl, source_language=sl)
             else:
-                result = t_services.translate(text, destination_language=tl, source_language=sl)     
+                if len(text) < 100:
+                    result = translate_short_service.translate(text, destination_language=tl, source_language=sl)
+                else:
+                    result = translate_long_service.translate(text, destination_language=tl, source_language=sl)
         except UnknownLanguage as err:
-            print(f"Could not translate due to {UnknownLanguage}. Continue to use default service.")
+            print(f"Could not translate due to {err}. Continue to use default service.")
             return None
-        except TranslatepyException:
-            print(f"Could not translate due to {TranslatepyException}. Continue to use default service.")
+        except TranslatepyException as err:
+            print(f"Could not translate due to {err}. Continue to use default service.")
             return None
-        except Exception:
-             print(f"Could not translate due to {Exception}. Continue to use default service.")
-             return None     
+        except Exception as err:
+             print(f"Could not translate due to {err}. Continue to use default service.")
+             return None
         return result
     
     def translateDefault(self, text, tl, sl, html):
@@ -123,15 +129,15 @@ class Translate(Resource):
 
         try:
             if html:
-                result = td_default.translate_html(text, destination_language=tl, source_language=sl)
+                result = default_service.translate_html(text, destination_language=tl, source_language=sl)
             else:
-                result = td_default.translate(text, destination_language=tl, source_language=sl)
+                result = default_service.translate(text, destination_language=tl, source_language=sl)
         except UnknownLanguage as err:
-            abort(400, f"An error occured while searching for the language you passed in. Similarity: {round(err.similarity)}")
-        except TranslatepyException:
-            abort(500, "An error occured while translating with translatepy")
-        except Exception:
-            abort(500, "An unknown error occured") 
+            abort(400, f"An error occured while searching for the language you passed in. Similarity: {round(err.similarity)}. Stack trace: {err}")
+        except TranslatepyException as err:
+            abort(500, f"An error occured while translating with translatepy. Stack trace: {err}")
+        except Exception as err:
+            abort(500, f"An unknown error occured. Stack trace: {err}") 
         return result
 
     def get(self):
@@ -139,6 +145,8 @@ class Translate(Resource):
         query = request.args.get('q')
         pre_format_tl = request.args.get('tl')
         sl = request.args.get('sl')
+        if sl == 'auto':
+            sl = reverso_service.language(query).result
         tl = pre_format_tl.split(",")
 
         response = []
@@ -171,6 +179,8 @@ class Translate(Resource):
         query = request.form.get('q')
         pre_format_tl = request.form.get('tl')
         sl = request.form.get('sl')
+        if sl == 'auto':
+            sl = reverso_service.language(query).result
         tl = pre_format_tl.split(",")
 
         response = []
@@ -205,7 +215,7 @@ api.add_resource(Translate, '/djapones', endpoint='djapones')
 if __name__ == '__main__':
     import logging
     logging.basicConfig(filename='server.log',level=logging.ERROR)
-    app.run(debug=False, port=8662)
+    app.run(debug=True, port=8662)
 
 
 
