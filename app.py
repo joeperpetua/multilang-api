@@ -245,7 +245,7 @@ api.add_resource(Translate, '/djapones', endpoint='djapones')
 if __name__ == '__main__':
     import logging
     logging.basicConfig(filename='server.log',level=logging.ERROR)
-    app.run(debug=True, port=8662)
+    app.run(debug=False, port=8662)
 
 
 
