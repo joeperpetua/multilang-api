@@ -158,6 +158,7 @@ class Translate(Resource):
             # convert tl from String to Language to compare with sl
             current_tl = str(language)
             current_tl = Language(current_tl)
+            sl = Language(sl)
 
             # if tl and sl are the same, then return the result as it arrived
             if current_tl.id != sl.id:
@@ -204,6 +205,7 @@ class Translate(Resource):
             # convert tl from String to Language to compare with sl
             current_tl = str(language)
             current_tl = Language(current_tl)
+            sl = Language(sl)
             
             # if tl and sl are the same, then return the result as it arrived
             if current_tl.id != sl.id:
@@ -243,7 +245,7 @@ api.add_resource(Translate, '/djapones', endpoint='djapones')
 if __name__ == '__main__':
     import logging
     logging.basicConfig(filename='server.log',level=logging.ERROR)
-    app.run(debug=False, port=8662)
+    app.run(debug=True, port=8662)
 
 
 
