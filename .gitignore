@@ -7,6 +7,5 @@
 flask_monitoringdashboard.db
 config.cfg
 server.log
-requirements.txt
 translation_services_test.txt
 __pycache__/
