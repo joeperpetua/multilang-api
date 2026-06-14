@@ -1,0 +1,16 @@
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: multilang-api
+    ports:
+      - "8662:8662"
+    volumes:
+      # Mount the current directory to /app for live-reloading and persisting the SQLite DB
+      - .:/app
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+    restart: unless-stopped

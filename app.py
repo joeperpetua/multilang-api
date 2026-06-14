@@ -15,7 +15,9 @@ class QuerySchema(Schema):
     q = fields.Str(required=True)
     tl = fields.List(fields.Str(), required=True)
 
+import os
 app = Flask(__name__)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "kjashfjklahsfqwekjrh")
 dashboard.config.init_from(file='./config.cfg')
 dashboard.bind(app)
 
@@ -149,7 +151,10 @@ class Translate(Resource):
         pre_format_tl = request.args.get('tl')
         sl = request.args.get('sl')
         if sl == 'auto':
-            sl = reverso_service.language(query).result
+            try:
+                sl = reverso_service.language(query).result
+            except:
+                sl = default_service.language(query).result
         tl = pre_format_tl.split(",")
 
         response = []
