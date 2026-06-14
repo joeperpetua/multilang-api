@@ -22,7 +22,8 @@ dashboard.config.init_from(file='./config.cfg')
 dashboard.bind(app)
 
 # host in NAS and add cors
-cors = CORS(app, origins=["http://127.0.0.1:5500", "https://multilang.joeper.myds.me", "https://joeperpetua.github.io"])
+allowed_origins=os.environ.get("CORS", "").split(';')
+cors = CORS(app, origins=allowed_origins)
 
 api = Api(app)
 schema = QuerySchema()
